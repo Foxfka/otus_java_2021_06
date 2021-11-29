@@ -3,7 +3,7 @@ package atm;
 import java.util.*;
 
 public class CellStorageImpl implements CellStorage{
-    private final TreeMap<Integer, Cell> cellList;
+    private TreeMap<Integer, Cell> cellList;
 
     public CellStorageImpl() {
         this.cellList = new TreeMap<Integer, Cell>(Collections.reverseOrder());

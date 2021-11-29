@@ -26,17 +26,19 @@ public class ATMImpl implements ATM {
     public void loadingMoney(List<BankNote> bankNoteList) {
         Map<Integer, List<BankNote>> banknoteListMap = bankNoteList.stream().collect(Collectors.groupingBy(BankNote::getDenomination));
 
-        for (Integer key : banknoteListMap.keySet()) {
-            if (cellStorage.getCell(key) != null)
+        banknoteListMap.keySet().stream().forEach(key -> {
+            if (cellStorage.getCell(key) != null) {
                 cellStorage.loadBankNoteList(key, banknoteListMap.get(key));
-            else throw new RuntimeException("Похоже вы пытаетесь загрузить листик вместо банкноты");
-        }
+            } else {
+                throw new UnknownDenominationException("Похоже вы пытаетесь загрузить листик вместо банкноты");
+            }
+        });
     }
 
     @Override
     public List<BankNote> deliveryMoney(int sum) {
         if (sum > getAtmBalance()) {
-            throw new RuntimeException("В банкомате Недостаточно средств для выполнения операции");
+            throw new NotEnoughFundsException("В банкомате Недостаточно средств для выполнения операции");
         }
 
         var collectedSum = 0;
@@ -66,7 +68,7 @@ public class ATMImpl implements ATM {
         }
 
         if (collectedSum < sum) {
-            throw new RuntimeException("Нет возможности набрать запрошенную сумму");
+            throw new NotHaveBankNotesException("Нет возможности набрать запрошенную сумму");
         }
 
         banknoteCountByCellMap.entrySet().stream()

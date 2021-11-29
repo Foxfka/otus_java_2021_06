@@ -1,9 +1,10 @@
 package atm;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CellImpl implements Cell {
-    private final List<BankNote> bankNoteList;
+    private List<BankNote> bankNoteList;
 
     public CellImpl(List<BankNote> bankNoteList) {
         this.bankNoteList = bankNoteList;
@@ -21,8 +22,8 @@ public class CellImpl implements Cell {
 
     @Override
     public List<BankNote> deliveryBankNoteList(int count) {
-        List<BankNote> removedBankNoteList = bankNoteList.subList(bankNoteList.size() - count, bankNoteList.size());
-        bankNoteList.subList(bankNoteList.size() - count, bankNoteList.size()).clear();
+        List<BankNote> removedBankNoteList = bankNoteList.stream().limit(count).collect(Collectors.toList());
+        bankNoteList.removeAll(removedBankNoteList);
         return removedBankNoteList;
     }
 
